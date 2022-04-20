@@ -1,0 +1,14 @@
+.ipynb_checkpoints
+.vs
+__pycache__
+*.wav
+*.pt
+*.zip
+*.npy
+*pkl
+*.flac
+*.mp3
+*.pth
+*.rar
+*.csv
+wandb/
