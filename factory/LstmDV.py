@@ -1,9 +1,11 @@
 import torch.nn as nn
 
 
-class D_VECTOR(nn.Module):
-    def __init__(self, num_layers=3, dim_input=80, dim_cell=768, dim_emb=256):
-        super(D_VECTOR, self).__init__()
+class LstmDV(nn.Module):
+    def __init__(
+        self, num_classes, num_layers=3, dim_input=80, dim_cell=768, dim_emb=256
+    ):
+        super(LstmDV, self).__init__()
         self.lstm = nn.LSTM(
             input_size=dim_input,
             hidden_size=dim_cell,
@@ -11,6 +13,7 @@ class D_VECTOR(nn.Module):
             batch_first=True,
         )
         self.embedding = nn.Linear(dim_cell, dim_emb)
+        self.output = nn.Linear(dim_emb, num_classes)
 
     def forward(self, x):
         self.lstm.flatten_parameters()
@@ -18,4 +21,5 @@ class D_VECTOR(nn.Module):
         embeds = self.embedding(lstm_out[:, -1, :])
         norm = embeds.norm(p=2, dim=-1, keepdim=True)
         embeds_normalized = embeds.div(norm)
-        return embeds_normalized
+        predictions = self.output(embeds)
+        return predictions, embeds_normalized
